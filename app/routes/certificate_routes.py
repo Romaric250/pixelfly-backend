@@ -6,6 +6,7 @@ from datetime import datetime
 from starlette.background import BackgroundTask
 
 from app.models.certificate_models import CertificateRequest
+from app.models.certificate_models import CertificateRequestModel
 from app.models.tic_certificate_models import NewFlyerRequest
 from app.services.certificate_service import CertificateGenerator
 from app.services.certificate_service import TICFlyerGenerator
@@ -15,7 +16,7 @@ router = APIRouter()
 
 
 @router.post("/{templateId}/generate-certificates/")
-async def create_certificate(company_id: str, request: CertificateRequest):
+async def create_certificate(company_id: str, request: CertificateRequestModel):
     try:
         # Initialize generator for company
         generator = CertificateGenerator(company_id)

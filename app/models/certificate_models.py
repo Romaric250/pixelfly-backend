@@ -50,9 +50,35 @@ class TemplateData(BaseModel):
     
 
 
-class CertRequestModel(BaseModel):
+class CertificateRequestModel(BaseModel):
     """
     The model for the pixel fly bulk certification generation
+
+    ```
+    {
+  templateId: string;
+  template: {
+    imageUrl: string;
+    width: number;
+    height: number;
+    fields: Array<{
+      id: string;
+      type: "text" | "date" | "image";
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      value: string;
+    }>;
+  };
+  data: Array<{
+    name: string;
+    date?: string;
+    image?: string;
+    [key: string]: string | undefined;
+  }>;
+}
+    ```
     """
     template_id: str = Field(..., min_length=3)
     template_data:TemplateData
