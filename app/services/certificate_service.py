@@ -10,6 +10,84 @@ from io import BytesIO
 from typing import List
 
 
+
+class PixelCertificateGenerator:
+    def __init__(self, company_id: str):
+        if company_id not in COMPANY_SETTINGS:
+            raise ValueError(f"Company {company_id} not configured")
+        self.settings = COMPANY_SETTINGS[company_id]
+        self._validate_paths()
+
+    def _validate_paths(self):
+        """Validate that all required files exist"""
+        if not self.settings["template_path"].exists():
+            raise FileNotFoundError(f"Template not found: {self.settings['template_path']}")
+        for font_path in self.settings["fonts"].values():
+            if not font_path.exists():
+                raise FileNotFoundError(f"Font not found: {font_path}")
+
+    def generate(self, name: str, course_name: str, created_at: datetime) -> bytes:
+        # Open template
+        img = Image.open(self.settings["template_path"])
+        draw = ImageDraw.Draw(img)
+        W, H = img.size
+
+        # Load fonts
+        name_font = ImageFont.truetype(
+            str(self.settings["fonts"]["title"]),
+            self.settings["font_sizes"]["name"]
+        )
+        regular_font = ImageFont.truetype(
+            str(self.settings["fonts"]["text"]),
+            self.settings["font_sizes"]["course"]
+        )
+        date_font = ImageFont.truetype(
+            str(self.settings["fonts"]["text"]),
+            self.settings["font_sizes"]["date"]
+        )
+        # Draw text
+        # Name
+        pos = self.settings["text_positions"]["name"]
+        draw.text(
+            (W * pos["x"], H * pos["y"]),
+            name,
+            font=name_font,
+            fill=self.settings["text_colors"]["name"],
+            anchor="mm"
+        )
+
+        # Course name
+        pos = self.settings["text_positions"]["course"]
+        draw.text(
+            (W * pos["x"], H * pos["y"]),
+            course_name,
+            font=regular_font,
+            fill=self.settings["text_colors"]["course"],
+            anchor="mm"
+        )
+
+        # Date
+        pos = self.settings["text_positions"]["date"]
+        draw.text(
+            (W * pos["x"], H * pos["y"]),
+            created_at.strftime("%B %d, %Y"),
+            font=date_font,
+            fill=self.settings["text_colors"]["date"],
+            anchor="mm"
+        )
+
+        # Convert to bytes
+        img_byte_array = io.BytesIO()
+        img.save(img_byte_array, format='PNG')
+        img_byte_array.seek(0)
+
+        return img_byte_array.getvalue()
+
+
+
+
+
+
 class CertificateGenerator:
     def __init__(self, company_id: str):
         if company_id not in COMPANY_SETTINGS:
@@ -234,6 +312,11 @@ class TICFlyerGenerator:
         buffer = BytesIO()
         img.save(buffer, format="PNG")
         return buffer.getvalue()
+
+
+
+
+
 
 
 
