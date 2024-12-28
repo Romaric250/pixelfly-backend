@@ -1,0 +1,6 @@
+.env
+.env*.local
+venv/
+.vscode/
+.idea/
+.vercel
