@@ -29,6 +29,9 @@ class FieldData(BaseModel):
     value: str = Field(..., min_length=1)
 
 class Data(BaseModel):
+    """
+    contains the list of the different users to generate the certificate for
+    """
     name : str = Field(..., min_length=5)
     date : str = Field(...)
     image : str = Field(...)
@@ -43,14 +46,16 @@ class TemplateData(BaseModel):
     width: int = Field(...,min_length=1)
     height: int = Field(...,min_length=1)
     fields : FieldData
-    data: Data 
     
     
 
 
 class CertRequestModel(BaseModel):
+    """
+    The model for the pixel fly bulk certification generation
+    """
     template_id: str = Field(..., min_length=3)
     template_data:TemplateData
-
+    data: Data
 
     
