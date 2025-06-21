@@ -149,7 +149,7 @@ def enhance():
                 "success": True
             }
             # Send to Next.js API to track in database
-            requests.post("http://localhost:3000/api/track/enhancement", json=track_data, timeout=2)
+            requests.post("https://pixelfly-pi.vercel.app/api/track/enhancement", json=track_data, timeout=2)
             print("✅ Enhancement operation tracked")
         except Exception as e:
             print(f"⚠️ Failed to track enhancement: {e}")
@@ -514,7 +514,7 @@ def watermark_photos():
                 "success": True
             }
             # Send to Next.js API to track in database
-            requests.post("http://localhost:3000/api/track/watermark", json=track_data, timeout=2)
+            requests.post("https://pixelfly-pi.vercel.app/api/track/watermark", json=track_data, timeout=2)
             print("✅ Watermarking operation tracked")
         except Exception as e:
             print(f"⚠️ Failed to track watermarking: {e}")

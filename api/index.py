@@ -125,6 +125,10 @@ def enhance_photo():
             print(f"⚠️ Failed to track enhancement: {e}")
 
         print("Sending response with enhanced image")
+        
+
+
+
         return jsonify(result)
     except Exception as e:
         print(f"Error: {e}")
