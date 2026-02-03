@@ -11,7 +11,7 @@ from typing import Dict, Any, Optional
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 import cv2
-import google.generativeai as genai
+import google.genai as genai
 from io import BytesIO
 import logging
 
@@ -26,8 +26,7 @@ class PhotoEnhancementService:
         # Configure Gemini for image analysis
         api_key = os.getenv('GOOGLE_API_KEY')
         if api_key:
-            genai.configure(api_key=api_key)
-            self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+            self.gemini_model = genai.GenerativeModel('gemini-1.5-flash', api_key=api_key)
             self.gemini_available = True
             logger.info("Gemini API configured successfully")
         else:

@@ -7,7 +7,7 @@ import os
 import time
 import asyncio
 from typing import Dict, List, Any, Optional
-import google.generativeai as genai
+import google.genai as genai
 from langchain_core.messages import BaseMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import StateGraph, END
@@ -20,9 +20,6 @@ from .watermark_service import WatermarkService
 from .image_processor import ImageProcessor
 
 logger = logging.getLogger(__name__)
-
-# Configure Gemini
-genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 class AgentState(TypedDict):
     """State shared between agents"""
@@ -45,12 +42,21 @@ class AIOrchestrator:
         self.watermark_service = WatermarkService()
         self.image_processor = ImageProcessor()
         
-        # Initialize Gemini model
-        self.gemini_model = ChatGoogleGenerativeAI(
-            model="gemini-pro-vision",
-            google_api_key=os.getenv('GOOGLE_API_KEY'),
-            temperature=0.1
-        )
+        api_key = os.getenv('GOOGLE_API_KEY')
+        if api_key:
+            try:
+                self.gemini_model = ChatGoogleGenerativeAI(
+                    model="gemini-pro-vision",
+                    google_api_key=api_key,
+                    temperature=0.1
+                )
+                logger.info("Gemini model initialized for AI orchestrator")
+            except Exception as e:
+                logger.warning(f"Gemini model initialization failed: {e}")
+                self.gemini_model = None
+        else:
+            self.gemini_model = None
+            logger.warning("Gemini API key not found, AI orchestrator will use fallback")
         
         # Build the agent workflow
         self.workflow = self._build_workflow()
